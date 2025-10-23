@@ -21,9 +21,13 @@ const userSchema = new Schema({
     },
     password: { type: String, required: true },
     age: { type: Number, min: 18, max: 100 },
-    gender: { type: String, enum: ['male', 'female', 'other'] },
-    skills: { type: [String], default: [] , maxlength: 10},
-    about: { type: String, default: '', maxlength: 500 },
+    gender: { type: String, enum: {
+            values: ['Male', 'Female', 'Other'],
+            message: '{VALUE} is invalid gender'
+        } 
+},
+    skills: { type: [String], maxlength: 10},
+    about: { type: String, maxlength: 500 },
 },{ timestamps: true });
 
 userSchema.methods.getJwtToken = function() {
