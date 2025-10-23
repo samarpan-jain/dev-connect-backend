@@ -21,7 +21,8 @@ profileRouter.use(userAuth);
  */
 profileRouter.get('/view', async (req, res) => {
     try {
-        apiResponse(res, 200, "Profile fetched successfully.", req.user);
+        const {password, ...safeData} = req.user.toObject();
+        apiResponse(res, 200, "Profile fetched successfully.", safeData);
     } catch (error) {
         apiResponse(res, 400, "Error fetching profile: " + error.message)
     }
@@ -45,9 +46,11 @@ profileRouter.patch('/update', async (req, res) => {
         if (!isValidOperation) {
             return apiResponse(res, 400, "Invalid updates!");
         }
+        const updates = Object.keys(req.body);
         updates.forEach((update) => req.user[update] = req.body[update]);
         await req.user.save();
-        apiResponse(res, 200, "Profile updated successfully.", req.user);
+        const {password, email, ...safeData} = req.user.toObject();
+        apiResponse(res, 200, "Profile updated successfully.", safeData);
     }
     catch (error) {
         apiResponse(res, 400, "Error updating profile: " + error.message)
