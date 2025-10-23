@@ -5,6 +5,38 @@ const { validateSignUp } = require('../utils/validation');
 const bcrypt = require('bcrypt');
 const apiResponse = require('../utils/generateResponse');
 
+/**
+ * @openapi
+ * /auth/signup:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Error creating user
+ */
 authRouter.post('/signup', async (req, res) => {
     try {
         validateSignUp(req);
@@ -23,6 +55,31 @@ authRouter.post('/signup', async (req, res) => {
     }
 })
 
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Login a user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
 authRouter.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -34,15 +91,26 @@ authRouter.post('/login', async (req, res) => {
         if (!isPasswordMatch) {
             return apiResponse(res, 400, 'Invalid email or password');
         }
-        res.cookie('token', user.getJwtToken(), {expires: new Date(Date.now() + 24* 3600000), httpOnly: true});
+        res.cookie('token', user.getJwtToken(), { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
         apiResponse(res, 200, "Login successful");
     } catch (error) {
         apiResponse(res, 400, "Error logging in: " + error.message);
     }
 })
 
+/**
+ * @openapi
+ * /auth/logout:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Logout the current user
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ */
 authRouter.post('/logout', (req, res) => {
-    res.cookie('token', null, { expires: new Date(Date.now())});
+    res.cookie('token', null, { expires: new Date(Date.now()) });
     apiResponse(res, 200, "Logged out successfully");
 });
 

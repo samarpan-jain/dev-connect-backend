@@ -7,6 +7,26 @@ const User = require('../models/user');
 const connReqRouter = express.Router();
 connReqRouter.use(userAuth);
 
+/**
+ * @openapi
+ * /connection-requests/send/{status}/{toUserId}:
+ *   post:
+ *     tags:
+ *       - ConnectionRequests
+ *     summary: Send a connection request
+ *     parameters:
+ *       - in: path
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: toUserId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Connection request sent successfully
+ */
 connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
     try {
         const allowedStatuses = ['ignored', 'interested'];
@@ -50,6 +70,26 @@ connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /connection-requests/review/{status}/{connReqId}:
+ *   post:
+ *     tags:
+ *       - ConnectionRequests
+ *     summary: Review a connection request
+ *     parameters:
+ *       - in: path
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: connReqId
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Connection request reviewed successfully
+ */
 connReqRouter.post('/review/:status/:connReqId', async (req, res) => {
     try {
         const allowedStatuses = ['accepted', 'rejected'];

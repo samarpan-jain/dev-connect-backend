@@ -8,6 +8,17 @@ const apiResponse = require('../utils/generateResponse');
 const profileRouter = express.Router();
 profileRouter.use(userAuth);
 
+/**
+ * @openapi
+ * /profile/view:
+ *   get:
+ *     tags:
+ *       - Profile
+ *     summary: View profile of current user
+ *     responses:
+ *       200:
+ *         description: Profile fetched successfully
+ */
 profileRouter.get('/view', async (req, res) => {
     try {
         apiResponse(res, 200, "Profile fetched successfully.", req.user);
@@ -16,6 +27,17 @@ profileRouter.get('/view', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /profile/update:
+ *   patch:
+ *     tags:
+ *       - Profile
+ *     summary: Update user profile
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ */
 profileRouter.patch('/update', async (req, res) => {
     try {
         const allowedUpdates = ['name', 'age', 'gender', 'skills', 'about'];
@@ -32,6 +54,28 @@ profileRouter.patch('/update', async (req, res) => {
     }
 });
 
+/**
+ * @openapi
+ * /profile/change-password:
+ *   patch:
+ *     tags:
+ *       - Profile
+ *     summary: Change user password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ */
 profileRouter.patch('/change-password', async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;

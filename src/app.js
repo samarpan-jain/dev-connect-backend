@@ -1,5 +1,7 @@
 const express = require('express');
 require('dotenv').config();
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const connectDB = require('./config/database');
 const cookieParser = require('cookie-parser');
 const authRouter = require('./routes/auth.router');
@@ -8,6 +10,7 @@ const connReqRouter = require('./routes/connectionReq.router');
 const userRouter = require('./routes/user.router');
 
 const PORT = process.env.APP_PORT || 3001;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const app = express();
 
 // Middleware to parse JSON bodies
@@ -19,6 +22,27 @@ app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
 app.use('/connection-requests', connReqRouter);
 app.use('/users', userRouter);
+
+const options = {
+  definition: {
+    openapi: '3.0.0', // Set the OpenAPI version
+    info: {
+      title: 'Deconnect APIs', // Title for your API documentation
+      version: '1.0.0',
+      description: 'A simple Express REST API for demonstration',
+    },
+    servers: [
+      {
+        url: BASE_URL,
+        description: 'Swagger Base URL',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.js'], // Path to the API docs (absolute - robust)
+};
+
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Connect to the database and start the server
 connectDB().then(() => {
