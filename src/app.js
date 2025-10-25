@@ -8,14 +8,22 @@ const authRouter = require('./routes/auth.router');
 const profileRouter = require('./routes/profile.router');
 const connReqRouter = require('./routes/connectionReq.router');
 const userRouter = require('./routes/user.router');
+const cors = require('cors');
 
 const PORT = process.env.APP_PORT || 3001;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const app = express();
 
+// Enable CORS
+const corsOptions = {
+  origin: ['*'],
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+};
+
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Routes
 app.use('/auth', authRouter);
@@ -23,6 +31,8 @@ app.use('/profile', profileRouter);
 app.use('/connection-requests', connReqRouter);
 app.use('/users', userRouter);
 
+
+// Swagger setup
 const options = {
   definition: {
     openapi: '3.0.0', // Set the OpenAPI version

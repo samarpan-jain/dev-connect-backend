@@ -92,7 +92,8 @@ authRouter.post('/login', async (req, res) => {
             return apiResponse(res, 400, 'Invalid email or password');
         }
         res.cookie('token', user.getJwtToken(), { expires: new Date(Date.now() + 24 * 3600000), httpOnly: true });
-        apiResponse(res, 200, "Login successful");
+        const { password: pwd, ...userData } = user.toObject();
+        apiResponse(res, 200, "Login successful", userData);
     } catch (error) {
         apiResponse(res, 400, "Error logging in: " + error.message);
     }
