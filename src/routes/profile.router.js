@@ -21,7 +21,7 @@ profileRouter.use(userAuth);
  */
 profileRouter.get('/view', async (req, res) => {
     try {
-        const {password, ...safeData} = req.user.toObject();
+        const { password, ...safeData } = req.user.toObject();
         apiResponse(res, 200, "Profile fetched successfully.", safeData);
     } catch (error) {
         apiResponse(res, 400, "Error fetching profile: " + error.message)
@@ -49,7 +49,7 @@ profileRouter.patch('/update', async (req, res) => {
         const updates = Object.keys(req.body);
         updates.forEach((update) => req.user[update] = req.body[update]);
         await req.user.save();
-        const {email, ...safeData} = req.user.toObject();
+        const { password, email, ...safeData } = req.user.toObject();
         apiResponse(res, 200, "Profile updated successfully.", safeData);
     }
     catch (error) {
@@ -85,7 +85,7 @@ profileRouter.patch('/change-password', async (req, res) => {
         if (!oldPassword || !newPassword) {
             return apiResponse(res, 400, "Please provide old and new passwords.");
         }
-        else if(oldPassword === newPassword){
+        else if (oldPassword === newPassword) {
             return apiResponse(res, 400, "New password must be different from old password.");
         }
         const user = new User(req.user);
