@@ -1,9 +1,11 @@
 const express = require('express');
 const authRouter = express.Router();
 const User = require('../models/user');
+const ConnectionReq = require('../models/connectionReq')
 const { validateSignUp } = require('../utils/validation');
 const bcrypt = require('bcrypt');
 const apiResponse = require('../utils/generateResponse');
+const userAuth = require('../middleware/auth-middleware');
 
 /**
  * @openapi
@@ -25,8 +27,6 @@ const apiResponse = require('../utils/generateResponse');
  *                 type: string
  *               password:
  *                 type: string
- *               gender:
- *                 type: string
  *             required:
  *               - name
  *               - email
@@ -40,13 +40,12 @@ const apiResponse = require('../utils/generateResponse');
 authRouter.post('/signup', async (req, res) => {
     try {
         validateSignUp(req);
-        const { name, email, password, gender } = req.body;
+        const { name, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             name,
             email,
             password: hashedPassword,
-            gender
         });
         await newUser.save();
         apiResponse(res, 201, "User created successfully");
@@ -111,8 +110,20 @@ authRouter.post('/login', async (req, res) => {
  *         description: Logged out successfully
  */
 authRouter.post('/logout', (req, res) => {
-    res.cookie('token', null, { expires: new Date(Date.now()) });
+    res.clearCookie('token');
     apiResponse(res, 200, "Logged out successfully");
 });
+
+authRouter.use(userAuth).post('/removeAccount', async(req, res)=>{
+    await User.findByIdAndDelete(req.user.id);
+    await ConnectionReq.deleteMany({
+         $or: [
+                { fromUserId: req.user.id },
+                { toUserId: req.user.id }
+            ]
+    })
+    res.clearCookie('token');
+    apiResponse(res, 200, "Account removed successfully");
+})
 
 module.exports = authRouter;

@@ -7,7 +7,7 @@ const User = require('../models/user');
 const userRouter = express.Router();
 userRouter.use(userAuth);
 
-const userSafeData = { name: 1, age: 1, gender: 1, skills: 1, about: 1, _id: 0 };
+const userSafeData = { name: 1, age: 1, gender: 1, photoUrl: 1, skills: 1, about: 1, _id: 0 };
 
 /**
  * @openapi

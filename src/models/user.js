@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const userSchema = new Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: true, minlength: 3, maxlength: 30 },
     email: { 
         type: String, 
         required: true, 
@@ -19,15 +19,18 @@ const userSchema = new Schema({
             }
         }
     },
+    photoUrl: { type: String, default: 'https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1095249842.jpg'},
     password: { type: String, required: true },
     age: { type: Number, min: 18, max: 100 },
-    gender: { type: String, enum: {
+    gender: { 
+        type: String, 
+        enum: {
             values: ['Male', 'Female', 'Other'],
             message: '{VALUE} is invalid gender'
-        } 
-},
-    skills: { type: [String], maxlength: 10},
-    about: { type: String, maxlength: 500 },
+        },
+    },
+    skills: { type: [String], maxlength: 10, default: ["Unit Testing", "Debugging"] },
+    about: { type: String, maxlength: 300, default: "Feel free to connect for networking." },
 },{ timestamps: true });
 
 userSchema.methods.getJwtToken = function() {

@@ -41,7 +41,7 @@ profileRouter.get('/view', async (req, res) => {
  */
 profileRouter.patch('/update', async (req, res) => {
     try {
-        const allowedUpdates = ['name', 'age', 'gender', 'skills', 'about'];
+        const allowedUpdates = ['name', 'age', 'gender', 'skills', 'about', 'photoUrl'];
         const isValidOperation = validateAllowedFields(req, allowedUpdates);
         if (!isValidOperation) {
             return apiResponse(res, 400, "Invalid updates!");
@@ -49,7 +49,7 @@ profileRouter.patch('/update', async (req, res) => {
         const updates = Object.keys(req.body);
         updates.forEach((update) => req.user[update] = req.body[update]);
         await req.user.save();
-        const {password, email, ...safeData} = req.user.toObject();
+        const {email, ...safeData} = req.user.toObject();
         apiResponse(res, 200, "Profile updated successfully.", safeData);
     }
     catch (error) {
