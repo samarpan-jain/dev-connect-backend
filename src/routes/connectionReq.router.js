@@ -63,7 +63,8 @@ connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
         });
         
         await connectionRequest.save();
-        return apiResponse(res, 200, 'Connection request sent successfully');
+        const message = (req.params.status=='interested')? 'Connection request sent successfully' : 'Profile ignored successfully';
+        return apiResponse(res, 200, message);
     }
     catch (error) {
         return apiResponse(res, 500, 'Error in sending connection request: ' + error.message);
