@@ -121,4 +121,30 @@ userRouter.get('/feed', async (req, res) => {
     }
 });
 
+userRouter.get('/connectionWithReqsCount', async(req,res)=>{
+    try{
+        const connectionCount = await ConnectionReq.find({
+            status:"accepted",
+            $or: [
+                { fromUserId: req.user.id },
+                { toUserId: req.user.id }
+            ]
+        }).countDocuments()
+
+        const connectionReqsCount = await ConnectionReq.find({
+            status:"interested",
+            $or: [
+                { fromUserId: req.user.id },
+                { toUserId: req.user.id }
+            ]
+        }).countDocuments()
+
+        return apiResponse(res, 200, 'Count Data fetched successfully', {connectionCount, connectionReqsCount})
+
+    }
+    catch(err){
+       return apiResponse(res, 500, 'Error in fetching count data: ' + err.message); 
+    }
+});
+
 module.exports = userRouter;
