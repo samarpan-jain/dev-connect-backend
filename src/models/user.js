@@ -29,7 +29,7 @@ const userSchema = new Schema({
             message: '{VALUE} is invalid gender'
         },
     },
-    skills: { type: [String], maxlength: 10, default: ["Unit Testing", "Debugging"] },
+    skills: { type: [String], maxlength: 10, default: ["Communication", "Team Player"] },
     about: { type: String, minlength:100 , maxlength: 300, default: "Feel free to connect for networking. Let's connect and see if our vibes match to build something for the future." },
 },{ timestamps: true });
 
