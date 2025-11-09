@@ -3,7 +3,6 @@ const validator = require('validator');
 const { Schema } = mongoose;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
 
 const userSchema = new Schema({
     name: { type: String, required: true, unique: true, minlength: 3, maxlength: 30 },

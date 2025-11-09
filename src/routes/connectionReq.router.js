@@ -65,7 +65,7 @@ connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
 
         await connectionRequest.save();
         if (req.params.status == "interested") {
-            await sendEmail("sender_email@gmail.com", "receiver_email@gmail.com", "New Connection Request Received", "<p>"+ "Hi, You have received a new connection request from " + req.user.email+"</p>");
+            await sendEmail("samarpanjain29+devConnect@gmail.com", "jainsamarpan1999@gmail.com", "New Connection Request Received", "<p>"+ "Hi, You have received a new connection request from " + req.user.email+"</p>");
         }
 
         const message = (req.params.status == 'interested') ? 'Connection request sent successfully' : 'Profile ignored successfully';
