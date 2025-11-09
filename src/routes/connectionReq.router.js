@@ -1,6 +1,7 @@
 const express = require('express');
 const apiResponse = require('../utils/generateResponse');
 const userAuth = require('../middleware/auth-middleware');
+const sendEmail = require('../utils/sendEmailAwsSes');
 const ConnectionReq = require('../models/connectionReq');
 const User = require('../models/user');
 
@@ -51,7 +52,7 @@ connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
                 }
             ]
         });
-    
+
         if (connectionReqExists) {
             throw new Error('Connection request already exists');
         }
@@ -61,9 +62,13 @@ connReqRouter.post('/send/:status/:toUserId', async (req, res) => {
             toUserId: req.params.toUserId,
             status: req.params.status
         });
-        
+
         await connectionRequest.save();
-        const message = (req.params.status=='interested')? 'Connection request sent successfully' : 'Profile ignored successfully';
+        if (req.params.status == "interested") {
+            await sendEmail("sender_email@gmail.com", "receiver_email@gmail.com", "New Connection Request Received", "<p>"+ "Hi, You have received a new connection request from " + req.user.email+"</p>");
+        }
+
+        const message = (req.params.status == 'interested') ? 'Connection request sent successfully' : 'Profile ignored successfully';
         return apiResponse(res, 200, message);
     }
     catch (error) {
